@@ -1,5 +1,6 @@
 const app = require("../app.js");
 const request = require("supertest");
+const endpoints = require('../endpoints.json')
 const db = require("../db/connection.js");
 
 const testData = require("../db/data/test-data");
@@ -35,7 +36,7 @@ describe("app /api/topics returns 200", () => {
   });
 });
 
-describe("app /api/ returns 200", () => {
+describe("3. app /api/ returns 200", () => {
     describe("/api/", () => {
       describe("GET /api/ returns 200", () => {
         test("status code: 200", () => {
@@ -45,35 +46,7 @@ describe("app /api/ returns 200", () => {
   
       test("Will return object, containing slug and description properties", () => {
         return request(app).get("/api/").expect(200).then(({body}) => {
-          expect(body).toEqual({
-            "GET /api": {
-              "description": "serves up a json representation of all the available endpoints of the api"
-            },
-            "GET /api/topics": {
-              "description": "serves an array of all topics",
-              "queries": [],
-              "exampleResponse": {
-                "topics": [{ "slug": "football", "description": "Footie!" }]
-              }
-            },
-            "GET /api/articles": {
-              "description": "serves an array of all articles",
-              "queries": ["author", "topic", "sort_by", "order"],
-              "exampleResponse": {
-                "articles": [
-                  {
-                    "title": "Seafood substitutions are increasing",
-                    "topic": "cooking",
-                    "author": "weegembump",
-                    "body": "Text from the article..",
-                    "created_at": "2018-05-30T15:59:13.341Z",
-                    "votes": 0,
-                    "comment_count": 6
-                  }
-                ]
-              }
-            }
-          })
+          expect(body).toEqual(endpoints)
         })
       });
     });
