@@ -79,3 +79,32 @@ describe("app /api/ returns 200", () => {
     });
   });
   
+  describe("4. GET /api/articles/:article_id", () => {
+    describe("/api/articles/:article_id", () => {
+      describe("GET /api/topics returns 200", () => {
+        test("status code: 200", () => {
+          return request(app).get("/api/topics").expect(200);
+        });
+      });
+  
+      test("Will return array of objects, containing slug and description properties", () => {
+        return request(app).get("/api/articles/1").expect(200).then(({body}) => {
+          expect(body[0]).toMatchObject({
+            author: expect.any(String),
+            title: expect.any(String),
+            article_id: expect.any(Number),
+            body: expect.any(String),
+            topic: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            article_img_url: expect.any(String)
+          })
+        })
+      });
+      test('Will return 404 when invalid ID given', () => {
+        return request(app).get('/api/articles/999').expect(404).then(({body}) => {
+            expect(body.msg).toEqual('Article ID not found')
+        })
+      })
+    });
+  });

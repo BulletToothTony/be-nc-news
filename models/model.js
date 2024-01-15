@@ -28,3 +28,24 @@ exports.getEndpoints = async () => {
         console.log(err)
     }
 }
+
+exports.getSingleArticle = async(article_id) => {
+    try {
+        const query = await connection.query(`
+        SELECT * FROM articles WHERE article_id = ${article_id}
+        `)
+        const {rows} = query
+
+        if (rows.length === 0) {
+            return Promise.reject({msg: 'Article ID not found'})
+        }
+
+        return rows
+    }
+
+    
+
+    catch(err) {
+        console.log(err)
+    }
+}
