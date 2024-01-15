@@ -11,4 +11,6 @@
         .env.development
         PGDATABASE=DBNAME
 
+- Install the dotenv package with npm install dotenv
+- The environment files should be be included in your git ignore file
 - You can then use the scripts to setup your local PSQL DB by running npm setup-dbs.
