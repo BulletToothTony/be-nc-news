@@ -1,4 +1,6 @@
 const connection = require("../db/connection")
+const endpoints = require('../endpoints.json')
+const fs = require('fs')
 
 exports.getTopics = async () => {
     try {
@@ -9,6 +11,17 @@ exports.getTopics = async () => {
         const {rows} = query
 
         return rows;
+    }
+
+    catch(err) {
+        console.log(err)
+    }
+}
+
+exports.getEndpoints = async () => {
+    try {
+
+        return endpoints
     }
 
     catch(err) {
