@@ -10,6 +10,13 @@ exports.getTopics = async () => {
 
         const {rows} = query
 
+        // sort by date descending order
+
+        const sortedRows = rows.sort((a,b) => {
+            return new Date(a.created_at) - new Date(b.created_at)
+            
+        })
+
         return rows;
     }
 
@@ -47,5 +54,33 @@ exports.getSingleArticle = async(article_id) => {
 
     catch(err) {
         console.log(err)
+    }
+}
+
+exports.getArticles = async() => {
+    try {
+        const query = await connection.query(`
+        SELECT * FROM articles;
+        `)
+
+        const {rows} = query
+
+
+        const sortedRows = rows.sort((a,b) => {
+            return new Date(b.created_at) - new Date(a.created_at)
+            
+        })
+
+        const removedBody = sortedRows.map((article) => {
+            let newArticle = {...article}
+            delete newArticle.body;
+            return newArticle
+        })
+
+        return removedBody
+    }
+
+    catch(err) {
+        
     }
 }
