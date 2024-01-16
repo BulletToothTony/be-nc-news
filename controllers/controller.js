@@ -1,4 +1,4 @@
-const { getTopics, getEndpoints, getSingleArticle, getArticles, getAllComments, postSingleComments, patchVotes, deleteSingleComment } = require("../models/model")
+const { getTopics, getEndpoints, getSingleArticle, getArticles, getAllComments, postSingleComments, patchVotes, deleteSingleComment, getAllUsers } = require("../models/model")
 
 exports.getAllTopics = async (req, res) => {
     try {
@@ -100,13 +100,26 @@ exports.deleteComment = async(req, res, next) => {
     const {comment_id} = req.params;
 
     try {
-        const deleted = deleteSingleComment(comment_id)
+        const deleted = await deleteSingleComment(comment_id)
 
         res.status(204).send(deleted)
     }
 
     catch(err) {
         console.log(err, 'error controller')
+        next(err)
+    }
+}
+
+exports.getUsers = async(req, res, next) => {
+
+    try {
+        const allUsers = await getAllUsers()
+
+        res.status(200).send(allUsers)
+    }
+
+    catch(err) {
         next(err)
     }
 }

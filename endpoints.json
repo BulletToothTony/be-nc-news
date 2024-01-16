@@ -54,5 +54,65 @@
     "exampleResponse": {
       "body": "Test ddddd"
     }
+  },
+
+  "PATCH /api/articles/:article_id": {
+    "description": "update an article by article_id",
+    "queries": ["article_id", "body"],
+    "example query": {
+      "URL": "patch /api/articles/10",
+      "body": "inc_votes: 10"
+    },
+    "exampleResponse": [
+      {
+        "article_id": 10,
+        "title": "Seven inspirational thought leaders from Manchester UK",
+        "topic": "mitch",
+        "author": "rogersop",
+        "body": "Who are we kidding, there is only one, and it's Mitch!",
+        "created_at": "2020-05-14T04:15:00.000Z",
+        "votes": 10,
+        "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+      }
+    ]
+  },
+
+  "DELETE /api/comments/:comment_id": {
+    "description": "delete comment by comment_id",
+    "queries": ["comment_id"],
+    "example query": {
+      "URL": "delete /api/comments/1/"
+    },
+    "exampleResponse": "No response, status will be 204"
+  },
+
+  "GET /api/users": {
+    "description": "Get all users",
+    "queries": ["/api/users"],
+    "example query": {
+      "URL": "get /api/users"
+    },
+    "exampleResponse": [
+      {
+        "username": "butter_bridge",
+        "name": "jonny",
+        "avatar_url": "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
+      },
+      {
+        "username": "icellusedkars",
+        "name": "sam",
+        "avatar_url": "https://avatars2.githubusercontent.com/u/24604688?s=460&v=4"
+      },
+      {
+        "username": "rogersop",
+        "name": "paul",
+        "avatar_url": "https://avatars2.githubusercontent.com/u/24394918?s=400&v=4"
+      },
+      {
+        "username": "lurker",
+        "name": "do_nothing",
+        "avatar_url": "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png"
+      }
+    ]
   }
 }
