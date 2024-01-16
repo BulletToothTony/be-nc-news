@@ -1,4 +1,4 @@
-const { getTopics, getEndpoints, getSingleArticle, getArticles } = require("../models/model")
+const { getTopics, getEndpoints, getSingleArticle, getArticles, getAllComments } = require("../models/model")
 
 exports.getAllTopics = async (req, res) => {
     try {
@@ -50,4 +50,19 @@ exports.getAllArticles = async(req, res) => {
    catch(err) {
     console.log(err)
    }
+}
+
+exports.getAllCommentsArticle = async (req, res, next) => {
+    const {article_id} = req.params
+
+
+    try {
+        const allComments = await getAllComments(article_id)
+
+        res.status(200).send(allComments)
+    }
+
+    catch(err) {
+        next(err)
+    }
 }

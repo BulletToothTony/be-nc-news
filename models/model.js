@@ -84,3 +84,30 @@ exports.getArticles = async() => {
         
     }
 }
+
+exports.getAllComments = async (article_id) => {
+    try {
+        const query = await connection.query(`
+
+        SELECT * FROM comments WHERE article_id = ${article_id};
+
+        `)
+
+        const {rows} = query
+
+        if (rows.length === 0) {
+            return Promise.reject({msg: 'no comments found for article ID'})
+        }
+
+        const sortedComments = rows.sort((a,b) => {
+            return new Date(b.created_at) - new Date(a.created_at)
+            
+        })
+
+        return sortedComments
+    }
+
+    catch(err) {
+
+    }
+}
