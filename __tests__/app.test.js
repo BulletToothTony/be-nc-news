@@ -133,3 +133,25 @@ describe("5. GET /api/articles returns 200", () => {
       });
   });
 });
+
+describe("6. GET /api/articles/:article_id/comments returns 200", () => {
+    describe("/api/articles/:article_id/comments", () => {
+      describe("GET /api/articles/1/comments returns 200", () => {
+        test("status code: 200", () => {
+          return request(app).get("/api/articles/1/comments").expect(200);
+        });
+      });
+  
+      test("Will return array of objects, sorted by most recent comments first", () => {
+        return request(app)
+          .get("/api/articles/1/comments")
+          .expect(200)
+          .then(({ body }) => {
+            expect(body).toBeSortedBy('created_at', {
+                descending: true,
+                coerce: true,
+            })
+        });
+      });
+    });
+  });
