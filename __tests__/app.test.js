@@ -279,7 +279,7 @@ describe("10. GET /api/users", () => {
       });
     });
 
-    test.only("Returns array of objects ", () => {
+    test("Returns array of objects ", () => {
       return request(app)
         .get("/api/users")
         .expect(200)
