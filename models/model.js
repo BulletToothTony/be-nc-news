@@ -111,3 +111,26 @@ exports.getAllComments = async (article_id) => {
 
     }
 }
+
+exports.postSingleComments = async(article_id, body) => {
+    // console.log(body)
+
+    // only need body, article_id, author/username
+
+    try {
+        const query = await connection.query(`
+        INSERT INTO comments(body, article_id, author)
+
+        VALUES ('${body.body}', '${article_id}', '${body.username}')
+
+        RETURNING *;
+        `)
+        return {body: query.rows[0].body}
+    }
+
+    
+
+    catch(err) {
+        return Promise.reject({msg: 'Article ID not found'})
+    }
+}

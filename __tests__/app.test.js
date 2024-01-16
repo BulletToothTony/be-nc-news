@@ -106,52 +106,102 @@ describe("5. GET /api/articles returns 200", () => {
         .get("/api/articles/")
         .expect(200)
         .then(({ body }) => {
-            expect(body).toBeSortedBy('created_at', {
-                descending: true,
-                coerce: true,
-            })
+          expect(body).toBeSortedBy("created_at", {
+            descending: true,
+            coerce: true,
+          });
         });
     });
 
     test("Will return array of objects, containting all articles and properties, sorted by date descending", () => {
-        return request(app)
-          .get("/api/articles/")
-          .expect(200)
-          .then(({ body }) => {
-            body.forEach((article) => {
-              expect(article).toMatchObject({
-                author: expect.any(String),
-                title: expect.any(String),
-                article_id: expect.any(Number),
-                topic: expect.any(String),
-                created_at: expect.any(String),
-                votes: expect.any(Number),
-                article_img_url: expect.any(String),
-              });
+      return request(app)
+        .get("/api/articles/")
+        .expect(200)
+        .then(({ body }) => {
+          body.forEach((article) => {
+            expect(article).toMatchObject({
+              author: expect.any(String),
+              title: expect.any(String),
+              article_id: expect.any(Number),
+              topic: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              article_img_url: expect.any(String),
             });
           });
-      });
+        });
+    });
   });
 });
 
 describe("6. GET /api/articles/:article_id/comments returns 200", () => {
-    describe("/api/articles/:article_id/comments", () => {
-      describe("GET /api/articles/1/comments returns 200", () => {
-        test("status code: 200", () => {
-          return request(app).get("/api/articles/1/comments").expect(200);
-        });
-      });
-  
-      test("Will return array of objects, sorted by most recent comments first", () => {
-        return request(app)
-          .get("/api/articles/1/comments")
-          .expect(200)
-          .then(({ body }) => {
-            expect(body).toBeSortedBy('created_at', {
-                descending: true,
-                coerce: true,
-            })
-        });
+  describe("/api/articles/:article_id/comments", () => {
+    describe("GET /api/articles/1/comments returns 200", () => {
+      test("status code: 200", () => {
+        return request(app).get("/api/articles/1/comments").expect(200);
       });
     });
+
+    test("Will return array of objects, sorted by most recent comments first", () => {
+      return request(app)
+        .get("/api/articles/1/comments")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body).toBeSortedBy("created_at", {
+            descending: true,
+            coerce: true,
+          });
+        });
+    });
   });
+});
+
+describe("7. POST /api/articles/:article_id/comments", () => {
+  describe("POST /api/articles/:article_id/comments", () => {
+    describe("POST /api/articles/:article_id/comments returns 201", () => {
+      test("status code: 201", () => {
+        const body = {
+          username: "rogersop",
+          body: "Test add to article 10",
+        };
+
+        return request(app)
+          .post("/api/articles/10/comments")
+          .send(body)
+          .expect(201);
+      });
+    });
+
+    test("Will return comment posted to article", () => {
+      const body = {
+        username: "rogersop",
+        body: "Test add to article 10",
+      };
+      return request(app)
+        .post("/api/articles/10/comments")
+        .send(body)
+        .expect(201)
+        .then(( {body} ) => {
+          expect(body).toEqual({
+            body: body.body
+          });
+        });
+    });
+
+    test("Will return 404 if invalid article ID", () => {
+        const body = {
+          username: "rogersop",
+          body: "Test add to article 10",
+        };
+        return request(app)
+          .post("/api/articles/100/comments")
+          .send(body)
+          .expect(404)
+          .then(( {body} ) => {
+            expect(body.msg).toEqual(
+              'Article ID not found'
+            );
+          });
+      });
+  });
+});
