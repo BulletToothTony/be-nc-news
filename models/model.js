@@ -166,4 +166,23 @@ exports.patchVotes = async(article_id, body) => {
     }
 }
 
-// UPDATE films SET kind = 'Dramatic' WHERE kind = 'Drama';
+exports.deleteSingleComment = async(comment_id) => {
+    try {
+        const query = await connection.query(`
+        DELETE FROM comments WHERE comment_id = ${comment_id};
+        `)
+
+        const {rowCount} = query
+
+        if (rowCount === 0) {
+            throw new Error(404)
+        }
+
+        // if rowcount === 0, nothing deleted
+    }
+
+    catch(err) {
+        console.log(err, 'ERROR')
+    }
+}
+

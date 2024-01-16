@@ -230,29 +230,45 @@ describe("8. PATCH /api/articles/:article_id votes", () => {
     });
 
     test("Will update article with number of votes decremented", () => {
-        const body = {
-          inc_votes: -5,
-        };
-        return request(app)
-          .patch("/api/articles/10")
-          .send(body)
-          .expect(201)
-          .then(({ body }) => {
-            expect(body[0].votes).toBe(10);
-          });
-      });
+      const body = {
+        inc_votes: -5,
+      };
+      return request(app)
+        .patch("/api/articles/10")
+        .send(body)
+        .expect(201)
+        .then(({ body }) => {
+          expect(body[0].votes).toBe(10);
+        });
+    });
 
-      test("Invalid article ID returns 404 and error message", () => {
-        const body = {
-          inc_votes: 1,
-        };
-        return request(app)
-          .patch("/api/articles/999")
-          .send(body)
-          .expect(404)
-          .then(({ body }) => {
-            expect(body.msg).toBe('Article ID not found');
-          });
+    test("Invalid article ID returns 404 and error message", () => {
+      const body = {
+        inc_votes: 1,
+      };
+      return request(app)
+        .patch("/api/articles/999")
+        .send(body)
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Article ID not found");
+        });
+    });
+  });
+});
+
+describe("9. DELETE /api/comments/:comment_id returns 204", () => {
+  describe.only("/api/comments/:comment_id", () => {
+    describe("DELETE /api/comments/:comment_id returns 204", () => {
+      test("status code: 204", () => {
+        return request(app).delete("/api/comments/1/").expect(204);
       });
+    });
+
+    test("Invalid ID returns still returns 204 as the there is nothing to delete", () => {
+      return request(app)
+        .delete("/api/comments/100/")
+        .expect(204)
+    });
   });
 });
