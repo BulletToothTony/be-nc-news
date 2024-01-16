@@ -181,26 +181,77 @@ describe("7. POST /api/articles/:article_id/comments", () => {
         .post("/api/articles/10/comments")
         .send(body)
         .expect(201)
-        .then(( {body} ) => {
+        .then(({ body }) => {
           expect(body).toEqual({
-            body: body.body
+            body: body.body,
           });
         });
     });
 
     test("Will return 404 if invalid article ID", () => {
+      const body = {
+        username: "rogersop",
+        body: "Test add to article 10",
+      };
+      return request(app)
+        .post("/api/articles/100/comments")
+        .send(body)
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toEqual("Article ID not found");
+        });
+    });
+  });
+});
+
+describe("8. PATCH /api/articles/:article_id votes", () => {
+  describe("/api/articles/:article_id", () => {
+    describe("PATCH /api/articles/:article_id returns 201", () => {
+      test("status code: 201", () => {
         const body = {
-          username: "rogersop",
-          body: "Test add to article 10",
+          inc_votes: 10,
+        };
+
+        return request(app).patch("/api/articles/10").send(body).expect(201);
+      });
+    });
+
+    test("Will update article with number of votes incremented", () => {
+      const body = {
+        inc_votes: 5,
+      };
+      return request(app)
+        .patch("/api/articles/10")
+        .send(body)
+        .expect(201)
+        .then(({ body }) => {
+          expect(body[0].votes).toBe(15);
+        });
+    });
+
+    test("Will update article with number of votes decremented", () => {
+        const body = {
+          inc_votes: -5,
         };
         return request(app)
-          .post("/api/articles/100/comments")
+          .patch("/api/articles/10")
+          .send(body)
+          .expect(201)
+          .then(({ body }) => {
+            expect(body[0].votes).toBe(10);
+          });
+      });
+
+      test("Invalid article ID returns 404 and error message", () => {
+        const body = {
+          inc_votes: 1,
+        };
+        return request(app)
+          .patch("/api/articles/999")
           .send(body)
           .expect(404)
-          .then(( {body} ) => {
-            expect(body.msg).toEqual(
-              'Article ID not found'
-            );
+          .then(({ body }) => {
+            expect(body.msg).toBe('Article ID not found');
           });
       });
   });

@@ -1,4 +1,4 @@
-const { getTopics, getEndpoints, getSingleArticle, getArticles, getAllComments, postSingleComments } = require("../models/model")
+const { getTopics, getEndpoints, getSingleArticle, getArticles, getAllComments, postSingleComments, patchVotes } = require("../models/model")
 
 exports.getAllTopics = async (req, res) => {
     try {
@@ -36,7 +36,6 @@ exports.getArticle = async (req, res, next) => {
     }
 
     catch(err) {
-        console.log(err)
         next(err)
     }
 }
@@ -75,6 +74,21 @@ exports.postComment = async(req, res, next) => {
         const postedComment = await postSingleComments(article_id, body)
 
         res.status(201).send(postedComment)
+    }
+
+    catch(err) {
+        next(err)
+    }
+}
+
+exports.patchVotes = async(req, res, next) => {
+    const {article_id} = req.params;
+    const {body} = req;
+
+    try {
+        const patchedArticle = await patchVotes(article_id, body)
+
+        res.status(201).send(patchedArticle)
     }
 
     catch(err) {

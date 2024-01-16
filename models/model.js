@@ -134,3 +134,36 @@ exports.postSingleComments = async(article_id, body) => {
         return Promise.reject({msg: 'Article ID not found'})
     }
 }
+
+exports.patchVotes = async(article_id, body) => {
+    // console.log(article_id, 'article model')
+    // console.log(body, 'body model')
+    try {
+
+        const currentVotes = await connection.query(`
+        SELECT votes FROM articles WHERE article_id = ${article_id}
+        `)
+
+        let currentVoteNumber = currentVotes.rows[0].votes
+
+        const newVoteNum = currentVoteNumber += body.inc_votes
+
+        const query = await connection.query(`
+        UPDATE articles SET votes = ${newVoteNum} WHERE article_id = ${article_id};
+        `)
+
+        const updatedArticle = await connection.query(`
+        SELECT * FROM articles WHERE article_id = ${article_id}
+        `)
+
+        const {rows} = updatedArticle
+
+        return rows
+    }
+
+    catch(err) {
+        return Promise.reject({msg: 'Article ID not found'})
+    }
+}
+
+// UPDATE films SET kind = 'Dramatic' WHERE kind = 'Drama';
