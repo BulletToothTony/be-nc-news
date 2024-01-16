@@ -186,3 +186,18 @@ exports.deleteSingleComment = async(comment_id) => {
     }
 }
 
+exports.getAllUsers = async() => {
+    try {
+        const query = await connection.query(`
+        SELECT * FROM users;
+        `)
+
+        const {rows} = query
+
+        return rows
+    }
+    
+    catch(err) {
+        console.log(err)
+    }
+}

@@ -258,7 +258,7 @@ describe("8. PATCH /api/articles/:article_id votes", () => {
 });
 
 describe("9. DELETE /api/comments/:comment_id returns 204", () => {
-  describe.only("/api/comments/:comment_id", () => {
+  describe("/api/comments/:comment_id", () => {
     describe("DELETE /api/comments/:comment_id returns 204", () => {
       test("status code: 204", () => {
         return request(app).delete("/api/comments/1/").expect(204);
@@ -266,9 +266,32 @@ describe("9. DELETE /api/comments/:comment_id returns 204", () => {
     });
 
     test("Invalid ID returns still returns 204 as the there is nothing to delete", () => {
+      return request(app).delete("/api/comments/100/").expect(204);
+    });
+  });
+});
+
+describe("10. GET /api/users", () => {
+  describe("/api/users", () => {
+    describe("GET /api/users/ returns 200", () => {
+      test("status code: 200", () => {
+        return request(app).get("/api/users/").expect(200);
+      });
+    });
+
+    test.only("Returns array of objects ", () => {
       return request(app)
-        .delete("/api/comments/100/")
-        .expect(204)
+        .get("/api/users")
+        .expect(200)
+        .then(({ body }) => {
+          body.forEach((topic) => {
+            expect(topic).toMatchObject({
+              username: expect.any(String),
+              name: expect.any(String),
+              avatar_url: expect.any(String),
+            });
+          });
+        });
     });
   });
 });
