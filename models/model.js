@@ -33,15 +33,14 @@ exports.getEndpoints = async () => {
 exports.getSingleArticle = async (article_id) => {
   try {
     const query = await connection.query(`
-        SELECT * FROM articles WHERE article_id = ${article_id}
-        `);
-    const { rows } = query;
+        SELECT * FROM articles WHERE article_id = $1`, [article_id]);
+        const { rows } = query;
 
     if (rows.length === 0) {
       return Promise.reject({ msg: "Article ID not found" });
     }
 
-    return rows;
+    return rows[0];
   } catch (err) {
     console.log(err);
   }
