@@ -40,14 +40,16 @@ exports.getArticle = async (req, res, next) => {
     }
 }
 
-exports.getAllArticles = async(req, res) => {
+exports.getAllArticles = async(req, res, next) => {
+    // http://localhost:8080/api/articles?topic=ehehe
+    // check if topic query used, if so run different query via sql where we grab topics that match, if no topic given grab all articles
    try {
         const allArticles = await getArticles()
 
-        res.status(200).send(allArticles)
+        res.status(200).send({articles: allArticles})
    }
    catch(err) {
-    console.log(err)
+    next(err)
    }
 }
 

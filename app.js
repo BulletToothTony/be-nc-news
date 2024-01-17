@@ -9,6 +9,7 @@ const {
   patchVotes,
   deleteComment,
   getUsers,
+  getArticleTopic,
 } = require("./controllers/controller");
 
 const app = express();
@@ -32,9 +33,16 @@ app.delete("/api/comments/:comment_id", deleteComment)
 
 app.get("/api/users", getUsers)
 
+
+// Custom Errors
 app.use((err, req, res, next) => {
+    // console.log(err)
   res.status(404).send(err);
+// if  
 });
 
+// PSQL Errors
+
+// All Else
 
 module.exports = app;
