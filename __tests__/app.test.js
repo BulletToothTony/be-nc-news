@@ -106,7 +106,7 @@ describe("5. GET /api/articles returns 200", () => {
         .get("/api/articles/")
         .expect(200)
         .then(({ body }) => {
-          expect(body).toBeSortedBy("created_at", {
+          expect(body.articles).toBeSortedBy("created_at", {
             descending: true,
             coerce: true,
           });
@@ -118,7 +118,9 @@ describe("5. GET /api/articles returns 200", () => {
         .get("/api/articles/")
         .expect(200)
         .then(({ body }) => {
-          body.forEach((article) => {
+          console.log(body.articles.length);
+          expect(body.articles.length).toBe(13);
+          body.articles.forEach((article) => {
             expect(article).toMatchObject({
               author: expect.any(String),
               title: expect.any(String),
@@ -127,6 +129,7 @@ describe("5. GET /api/articles returns 200", () => {
               created_at: expect.any(String),
               votes: expect.any(Number),
               article_img_url: expect.any(String),
+              comment_count: expect.any(String),
             });
           });
         });
