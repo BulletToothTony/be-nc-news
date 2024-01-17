@@ -1,6 +1,6 @@
 const { getTopics, getEndpoints, getSingleArticle, getArticles, getAllComments, postSingleComments, patchVotes, deleteSingleComment, getAllUsers } = require("../models/model")
 
-exports.getAllTopics = async (req, res) => {
+exports.getAllTopics = async (req, res, next) => {
     try {
         const allTopics = await getTopics()
 
@@ -8,19 +8,19 @@ exports.getAllTopics = async (req, res) => {
     }
 
     catch(err) {
-        console.log(err)
+        next(err)
     }
 }
 
 
-exports.getApiEndpoints = async (req, res) => {
+exports.getApiEndpoints = async (req, res, next) => {
     try {
         const apiEndpoints = await getEndpoints()
 
         res.status(200).send(apiEndpoints)
     }
     catch(err) {
-        console.log(err)
+        next(err)
     }
 }
 
