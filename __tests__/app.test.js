@@ -118,7 +118,6 @@ describe("5. GET /api/articles returns 200", () => {
         .get("/api/articles/")
         .expect(200)
         .then(({ body }) => {
-          console.log(body.articles.length);
           expect(body.articles.length).toBe(13);
           body.articles.forEach((article) => {
             expect(article).toMatchObject({

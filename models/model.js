@@ -50,7 +50,7 @@ exports.getSingleArticle = async (article_id) => {
 exports.getArticles = async () => {
   try {
     const query = await connection.query(`
-        SELECT articles.article_id, articles.author, title, topic, articles.created_at, articles.votes, article_img_url, COUNT(comments) AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id GROUP BY articles.article_id ORDER BY articles.created_at DESC;
+        SELECT articles.*, COUNT(comments) AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id GROUP BY articles.article_id ORDER BY articles.created_at DESC;
         `);
 
     const { rows } = query;
@@ -101,8 +101,6 @@ exports.postSingleComments = async (article_id, body) => {
 };
 
 exports.patchVotes = async (article_id, body) => {
-  // console.log(article_id, 'article model')
-  // console.log(body, 'body model')
   try {
     const currentVotes = await connection.query(`
         SELECT votes FROM articles WHERE article_id = ${article_id}
