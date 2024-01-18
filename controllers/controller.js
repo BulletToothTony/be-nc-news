@@ -118,7 +118,7 @@ exports.getUsers = async(req, res, next) => {
 
     try {
         const allUsers = await getAllUsers()
-
+        
         res.status(200).send(allUsers)
     }
 
