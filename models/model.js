@@ -55,20 +55,43 @@ exports.getSingleArticle = async (article_id) => {
 };
 
 exports.getArticles = async (topic) => {
+  // const queryValues = [];
+  // let queryStr = `SELECT articles.*, COUNT(comments) AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id GROUP BY articles.article_id ORDER BY articles.created_at DESC`
+
+  // if (topic.topic) {
+  //   queryValues.push(topic.topic)
+  //   queryStr += ` WHERE articles.topic = '${topic.topic}'`
+  // }
+
+  // console.log(queryStr)
+
+
+  
+  // check if topic exists
+
+ 
+
+
   try {
     if (topic.topic) {
       const query = await connection.query(`
       SELECT articles.*, COUNT(comments) AS comment_count 
-      FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id WHERE articles.topic = '${topic.topic}'
+      FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id WHERE articles.topic = $1
       GROUP BY articles.article_id ORDER BY articles.created_at DESC;
-      `);
+      `, [topic.topic]);
 
       const { rows } = query;
+
+      if (rows.length === 0) {
+        return Promise.reject({ status: 404, msg: "No topics found" });
+      }
 
       return rows;
     } else {
       const query = await connection.query(`
-      SELECT articles.*, COUNT(comments) AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id GROUP BY articles.article_id ORDER BY articles.created_at DESC;
+      SELECT articles.*, COUNT(comments) AS comment_count 
+      FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id 
+      GROUP BY articles.article_id ORDER BY articles.created_at DESC;
       `);
 
       const { rows } = query;
