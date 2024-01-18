@@ -144,6 +144,22 @@ describe("6. GET /api/articles/:article_id/comments returns 200", () => {
       });
     });
 
+    test("Will return object with correct properties", () => {
+      return request(app).get("/api/articles/9/comments").expect(200).then(({body}) => {
+        body.forEach((comment) => {
+          expect(comment).toMatchObject({
+            comment_id: expect.any(Number),
+            votes: expect.any(Number),
+            created_at: expect.any(String),
+            author: expect.any(String),
+            body: expect.any(String),
+            article_id: expect.any(Number),
+          })
+        })
+      })
+    });
+  });
+
     test("Will return array of objects, sorted by most recent comments first", () => {
       return request(app)
         .get("/api/articles/1/comments")
@@ -156,7 +172,6 @@ describe("6. GET /api/articles/:article_id/comments returns 200", () => {
         });
     });
   });
-});
 
 describe("7. POST /api/articles/:article_id/comments", () => {
   describe("POST /api/articles/:article_id/comments", () => {

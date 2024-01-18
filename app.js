@@ -36,9 +36,11 @@ app.get("/api/users", getUsers)
 
 // Custom Errors
 app.use((err, req, res, next) => {
-    // console.log(err)
-  res.status(404).send(err);
-// if  
+
+    if (err.status && err.msg) {
+        res.status(err.status).send({msg: err.msg})
+    }
+
 });
 
 // PSQL Errors
