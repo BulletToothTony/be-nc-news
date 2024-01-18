@@ -199,7 +199,6 @@ describe("7. POST /api/articles/:article_id/comments", () => {
         .send(body)
         .expect(201)
         .then(({ body }) => {
-          console.log(body)
           expect(body).toEqual({
             body: "Test add to article 10",
           });
@@ -289,7 +288,7 @@ describe("8. PATCH /api/articles/:article_id votes", () => {
   });
 });
 
-describe.only("9. DELETE /api/comments/:comment_id returns 204", () => {
+describe("9. DELETE /api/comments/:comment_id returns 204", () => {
   describe("/api/comments/:comment_id", () => {
     describe("DELETE /api/comments/:comment_id returns 204", () => {
       test("status code: 204", () => {
