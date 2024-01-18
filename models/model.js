@@ -32,12 +32,15 @@ exports.getEndpoints = async () => {
 
 exports.getSingleArticle = async (article_id) => {
   try {
-    const query = await connection.query(`
-        SELECT * FROM articles WHERE article_id = $1`, [article_id]);
-        const { rows } = query;
+    const query = await connection.query(
+      `
+        SELECT * FROM articles WHERE article_id = $1`,
+      [article_id]
+    );
+    const { rows } = query;
 
     if (rows.length === 0) {
-      return Promise.reject({status: 404, msg: "Article ID not found" });
+      return Promise.reject({ status: 404, msg: "Article ID not found" });
     }
 
     return rows[0];
@@ -60,26 +63,27 @@ exports.getArticles = async () => {
 
 exports.getAllComments = async (article_id) => {
   try {
-    const query = await connection.query(`
+    const query = await connection.query(
+      `
 
         SELECT * FROM comments WHERE article_id = $1 ORDER BY created_at DESC;
-`, [article_id]);
+`,
+      [article_id]
+    );
 
     const { rows } = query;
 
     if (rows.length === 0) {
-      return Promise.reject({ status: 404, msg: "no comments found for article ID" });
+      return Promise.reject({
+        status: 404,
+        msg: "no comments found for article ID",
+      });
     }
     return rows;
-    
   } catch (err) {}
 };
 
 exports.postSingleComments = async (article_id, body) => {
-  // console.log(body)
-
-  // only need body, article_id, author/username
-
   try {
     const query = await connection.query(`
         INSERT INTO comments(body, article_id, author)
@@ -90,7 +94,11 @@ exports.postSingleComments = async (article_id, body) => {
         `);
     return { body: query.rows[0].body };
   } catch (err) {
-    return Promise.reject({status: 404, msg: "Article ID not found" });
+    if (err.constraint === "comments_article_id_fkey") {
+      return Promise.reject({ status: 404, msg: "Article ID not found" });
+    } else if (err.constraint === "comments_author_fkey") {
+      return Promise.reject({ status: 404, msg: "Username not found" });
+    }
   }
 };
 
@@ -116,7 +124,7 @@ exports.patchVotes = async (article_id, body) => {
 
     return rows;
   } catch (err) {
-    return Promise.reject({status: 404, msg: "Article ID not found" });
+    return Promise.reject({ status: 404, msg: "Article ID not found" });
   }
 };
 
