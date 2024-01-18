@@ -34,7 +34,12 @@ exports.getSingleArticle = async (article_id) => {
   try {
     const query = await connection.query(
       `
-        SELECT * FROM articles WHERE article_id = $1`,
+      SELECT articles.*, COUNT(comments.article_id) AS comment_count
+      FROM articles
+      LEFT JOIN comments ON articles.article_id = comments.article_id
+      WHERE articles.article_id = $1
+      GROUP BY articles.article_id;
+      `,
       [article_id]
     );
     const { rows } = query;
@@ -53,7 +58,9 @@ exports.getArticles = async (topic) => {
   try {
     if (topic.topic) {
       const query = await connection.query(`
-      SELECT * FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id WHERE topic = '${topic.topic}'
+      SELECT articles.*, COUNT(comments) AS comment_count 
+      FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id WHERE articles.topic = '${topic.topic}'
+      GROUP BY articles.article_id ORDER BY articles.created_at DESC;
       `);
 
       const { rows } = query;

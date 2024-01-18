@@ -27,7 +27,6 @@ describe("app /api/topics returns 200", () => {
         .expect(200)
         .then(({ body }) => {
           body.forEach((topic) => {
-            // console.log(topic)
             expect(topic).toMatchObject({
               slug: expect.any(String),
               description: expect.any(String),
@@ -145,33 +144,36 @@ describe("6. GET /api/articles/:article_id/comments returns 200", () => {
     });
 
     test("Will return object with correct properties", () => {
-      return request(app).get("/api/articles/9/comments").expect(200).then(({body}) => {
-        body.forEach((comment) => {
-          expect(comment).toMatchObject({
-            comment_id: expect.any(Number),
-            votes: expect.any(Number),
-            created_at: expect.any(String),
-            author: expect.any(String),
-            body: expect.any(String),
-            article_id: expect.any(Number),
-          })
-        })
-      })
-    });
-  });
-
-    test("Will return array of objects, sorted by most recent comments first", () => {
       return request(app)
-        .get("/api/articles/1/comments")
+        .get("/api/articles/9/comments")
         .expect(200)
         .then(({ body }) => {
-          expect(body).toBeSortedBy("created_at", {
-            descending: true,
-            coerce: true,
+          body.forEach((comment) => {
+            expect(comment).toMatchObject({
+              comment_id: expect.any(Number),
+              votes: expect.any(Number),
+              created_at: expect.any(String),
+              author: expect.any(String),
+              body: expect.any(String),
+              article_id: expect.any(Number),
+            });
           });
         });
     });
   });
+
+  test("Will return array of objects, sorted by most recent comments first", () => {
+    return request(app)
+      .get("/api/articles/1/comments")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toBeSortedBy("created_at", {
+          descending: true,
+          coerce: true,
+        });
+      });
+  });
+});
 
 describe("7. POST /api/articles/:article_id/comments", () => {
   describe("POST /api/articles/:article_id/comments", () => {
@@ -293,20 +295,26 @@ describe("9. DELETE /api/comments/:comment_id returns 204", () => {
     describe("DELETE /api/comments/:comment_id returns 204", () => {
       test("status code: 204", () => {
         // Article 9 has comment IDs 1, 17 after deleting should only have comment_id 1
-        return request(app).delete("/api/comments/17/").expect(204).then(() => {
-          request(app).get("/api/articles/9/comments").expect(200).then(({body}) => {
-            expect(body).toEqual([
-              {
-                "comment_id": 1,
-                "body": "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
-                "article_id": 9,
-                "author": "butter_bridge",
-                "votes": 16,
-                "created_at": "2020-04-06T12:17:00.000Z"
-              }
-            ])
-          })
-        });
+        return request(app)
+          .delete("/api/comments/17/")
+          .expect(204)
+          .then(() => {
+            request(app)
+              .get("/api/articles/9/comments")
+              .expect(200)
+              .then(({ body }) => {
+                expect(body).toEqual([
+                  {
+                    comment_id: 1,
+                    body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+                    article_id: 9,
+                    author: "butter_bridge",
+                    votes: 16,
+                    created_at: "2020-04-06T12:17:00.000Z",
+                  },
+                ]);
+              });
+          });
       });
     });
 
@@ -345,26 +353,82 @@ describe("11. GET /api/articles topic query", () => {
   describe("/api/users", () => {
     describe("GET /api/users/ returns 200", () => {
       test("status code: 200", () => {
-        return request(app).get("/api/articles?topic=cats").expect(200).then(({body}) => {
-          console.log(body)
-          // Add test for article topic and comments after fixing SQL statement
+        return request(app).get("/api/articles?topic=cats").expect(200);
+      });
+    });
+  });
+
+  test("Returns array of objects ", () => {
+    return request(app)
+      .get("/api/articles?topic=mitch")
+      .expect(200)
+      .then(({ body }) => {
+        body.articles.forEach((topic) => {
+          expect(topic).toMatchObject({
+            "article_id": expect.any(Number),
+            "title": expect.any(String),
+            "topic": expect.any(String),
+            "author": expect.any(String),
+            "body": expect.any(String),
+            "created_at": expect.any(String),
+            "votes": expect.any(Number),
+            "article_img_url": expect.any(String),
+            "comment_count": expect.any(String),
+          });
         });
+      });
+  });
+
+  test("Returns single object for cats ", () => {
+    return request(app)
+      .get("/api/articles?topic=cats")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toEqual({
+          articles: [
+            {
+              article_id: 5,
+              title: 'UNCOVERED: catspiracy to bring down democracy',
+              topic: 'cats',
+              author: 'rogersop',
+              body: 'Bastet walks amongst us, and the cats are taking arms!',
+              created_at: '2020-08-03T13:14:00.000Z',
+              votes: 0,
+              article_img_url: 'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700',
+              comment_count: '2'
+            }
+          ]
+        });
+      });
+  });
+});
+
+describe("12. GET /api/articles/:article_id (comment_count)", () => {
+  describe("/api/articles/:article_id", () => {
+    describe("GET /api/articles/:article_id returns 200", () => {
+      test("status code: 200", () => {
+        return request(app).get("/api/articles/1").expect(200);
       });
     });
 
-    // test("Returns array of objects ", () => {
-    //   return request(app)
-    //     .get("/api/users")
-    //     .expect(200)
-    //     .then(({ body }) => {
-    //       body.forEach((topic) => {
-    //         expect(topic).toMatchObject({
-    //           username: expect.any(String),
-    //           name: expect.any(String),
-    //           avatar_url: expect.any(String),
-    //         });
-    //       });
-    //     });
-    // });
+    test("Returns object with comment count included ", () => {
+      return request(app)
+        .get("/api/articles/1")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body).toEqual({
+            article_id: 1,
+            title: "Living in the shadow of a great man",
+            topic: "mitch",
+            author: "butter_bridge",
+            body: "I find this existence challenging",
+            created_at: "2020-07-09T20:11:00.000Z",
+            votes: 100,
+            article_img_url:
+              "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+            comment_count: "11",
+          });
+        });
+    });
   });
 });
