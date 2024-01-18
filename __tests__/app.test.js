@@ -429,3 +429,37 @@ describe("12. GET /api/articles/:article_id (comment_count)", () => {
     });
   });
 });
+
+
+describe.only("17. GET /api/users/:username", () => {
+  describe("/api/users/:username", () => {
+    describe("GET /api/users/:username returns 200", () => {
+      test("status code: 200", () => {
+        return request(app).get("/api/users/lurker").expect(200);
+      });
+    });
+
+    test("Returns user object", () => {
+      return request(app)
+        .get("/api/users/lurker")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body).toMatchObject({
+            "username": expect.any(String),
+            "avatar_url": expect.any(String),
+            "name": expect.any(String)
+          });
+        });
+    });
+
+    test("404 for no user", () => {
+      return request(app)
+        .get("/api/users/fakeuser")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body).toEqual({msg: "Username not found"})
+        });
+    });
+  });
+});
+
