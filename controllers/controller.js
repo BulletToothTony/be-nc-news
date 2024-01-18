@@ -1,131 +1,119 @@
-const { getTopics, getEndpoints, getSingleArticle, getArticles, getAllComments, postSingleComments, patchVotes, deleteSingleComment, getAllUsers } = require("../models/model")
+const {
+  getTopics,
+  getEndpoints,
+  getSingleArticle,
+  getArticles,
+  getAllComments,
+  postSingleComments,
+  patchVotes,
+  deleteSingleComment,
+  getAllUsers,
+} = require("../models/model");
 
 exports.getAllTopics = async (req, res, next) => {
-    try {
-        const allTopics = await getTopics()
+  try {
+    const allTopics = await getTopics();
 
-        res.status(200).send(allTopics)
-    }
-
-    catch(err) {
-        next(err)
-    }
-}
-
+    res.status(200).send(allTopics);
+  } catch (err) {
+    next(err);
+  }
+};
 
 exports.getApiEndpoints = async (req, res, next) => {
-    try {
-        const apiEndpoints = await getEndpoints()
+  try {
+    const apiEndpoints = await getEndpoints();
 
-        res.status(200).send(apiEndpoints)
-    }
-    catch(err) {
-        next(err)
-    }
-}
+    res.status(200).send(apiEndpoints);
+  } catch (err) {
+    next(err);
+  }
+};
 
 exports.getArticle = async (req, res, next) => {
-    const {article_id} = req.params
-    
+  const { article_id } = req.params;
 
-    const numId = Number(article_id)
+  const numId = Number(article_id);
 
-    try {
-        const singleArticle = await getSingleArticle(numId)
+  try {
+    const singleArticle = await getSingleArticle(numId);
 
-        res.status(200).send(singleArticle)
-    }
+    res.status(200).send(singleArticle);
+  } catch (err) {
+    next(err);
+  }
+};
 
-    catch(err) {
-        next(err)
-    }
-}
+exports.getAllArticles = async (req, res, next) => {
+  const { query } = req;
 
-exports.getAllArticles = async(req, res, next) => {
-    const {query} = req
-    console.log(query)
-    // http://localhost:8080/api/articles?topic=ehehe
-    // check if topic query used, if so run different query via sql where we grab topics that match, if no topic given grab all articles
-   try {
-        const allArticles = await getArticles(query)
+  try {
+    const allArticles = await getArticles(query);
 
-        res.status(200).send({articles: allArticles})
-   }
-   catch(err) {
-    next(err)
-   }
-}
+    res.status(200).send({ articles: allArticles });
+  } catch (err) {
+    next(err);
+  }
+};
 
 exports.getAllCommentsArticle = async (req, res, next) => {
-    const {article_id} = req.params
+  const { article_id } = req.params;
 
+  try {
+    const allComments = await getAllComments(article_id);
 
-    try {
-        const allComments = await getAllComments(article_id)
+    res.status(200).send(allComments);
+  } catch (err) {
+    console.log(err, "cont");
+    next(err);
+  }
+};
 
-        res.status(200).send(allComments)
-    }
+exports.postComment = async (req, res, next) => {
+  const { article_id } = req.params;
+  const { body } = req;
 
-    catch(err) {
-        console.log(err, 'cont')
-        next(err)
-    }
-}
+  try {
+    const postedComment = await postSingleComments(article_id, body);
 
-exports.postComment = async(req, res, next) => {
-    const {article_id} = req.params
-    const {body} = req
+    res.status(201).send(postedComment);
+  } catch (err) {
+    next(err);
+  }
+};
 
-    try {
-        const postedComment = await postSingleComments(article_id, body)
+exports.patchVotes = async (req, res, next) => {
+  const { article_id } = req.params;
+  const { body } = req;
 
-        res.status(201).send(postedComment)
-    }
+  try {
+    const patchedArticle = await patchVotes(article_id, body);
 
-    catch(err) {
-        next(err)
-    }
-}
+    res.status(201).send(patchedArticle);
+  } catch (err) {
+    next(err);
+  }
+};
 
-exports.patchVotes = async(req, res, next) => {
-    const {article_id} = req.params;
-    const {body} = req;
+exports.deleteComment = async (req, res, next) => {
+  const { comment_id } = req.params;
 
-    try {
-        const patchedArticle = await patchVotes(article_id, body)
+  try {
+    const deleted = await deleteSingleComment(comment_id);
 
-        res.status(201).send(patchedArticle)
-    }
+    res.status(204).send(deleted);
+  } catch (err) {
+    console.log(err, "error controller");
+    next(err);
+  }
+};
 
-    catch(err) {
-        next(err)
-    }
-}
+exports.getUsers = async (req, res, next) => {
+  try {
+    const allUsers = await getAllUsers();
 
-exports.deleteComment = async(req, res, next) => {
-    const {comment_id} = req.params;
-
-    try {
-        const deleted = await deleteSingleComment(comment_id)
-
-        res.status(204).send(deleted)
-    }
-
-    catch(err) {
-        console.log(err, 'error controller')
-        next(err)
-    }
-}
-
-exports.getUsers = async(req, res, next) => {
-
-    try {
-        const allUsers = await getAllUsers()
-        
-        res.status(200).send(allUsers)
-    }
-
-    catch(err) {
-        next(err)
-    }
-}
+    res.status(200).send(allUsers);
+  } catch (err) {
+    next(err);
+  }
+};
