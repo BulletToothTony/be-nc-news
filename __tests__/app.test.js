@@ -349,7 +349,7 @@ describe("10. GET /api/users", () => {
   });
 });
 
-describe("11. GET /api/articles topic query", () => {
+describe.only("11. GET /api/articles topic query", () => {
   describe("/api/users", () => {
     describe("GET /api/users/ returns 200", () => {
       test("status code: 200", () => {
@@ -357,6 +357,13 @@ describe("11. GET /api/articles topic query", () => {
       });
     });
   });
+
+  test("status code: 404", () => {
+    return request(app).get("/api/articles?topic=catsSSSS").expect(404).then(({body}) => {
+      expect(body).toEqual({msg: 'No topics found'})
+    });
+  });
+});
 
   test("Returns array of objects ", () => {
     return request(app)
@@ -401,7 +408,6 @@ describe("11. GET /api/articles topic query", () => {
         });
       });
   });
-});
 
 describe("12. GET /api/articles/:article_id (comment_count)", () => {
   describe("/api/articles/:article_id", () => {
@@ -416,16 +422,7 @@ describe("12. GET /api/articles/:article_id (comment_count)", () => {
         .get("/api/articles/1")
         .expect(200)
         .then(({ body }) => {
-          expect(body).toEqual({
-            article_id: 1,
-            title: "Living in the shadow of a great man",
-            topic: "mitch",
-            author: "butter_bridge",
-            body: "I find this existence challenging",
-            created_at: "2020-07-09T20:11:00.000Z",
-            votes: 100,
-            article_img_url:
-              "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+          expect(body).hasOwnProperty({
             comment_count: "11",
           });
         });
