@@ -233,3 +233,23 @@ exports.getAllUsers = async () => {
     console.log(err);
   }
 };
+
+exports.getUser = async(username) => {
+  try {
+    const query = await connection.query(`
+      SELECT * FROM users WHERE username = '${username}'
+    `)
+
+    const {rows} = query;
+
+    if (rows.length === 0) {
+      return Promise.reject({ status: 404, msg: "Username not found" });
+    }
+
+    return rows[0]
+  }
+
+  catch(err) {
+    console.log(err)
+  }
+}

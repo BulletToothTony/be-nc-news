@@ -8,6 +8,7 @@ const {
   patchVotes,
   deleteSingleComment,
   getAllUsers,
+  getUser,
 } = require("../models/model");
 
 exports.getAllTopics = async (req, res, next) => {
@@ -119,3 +120,20 @@ exports.getUsers = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.getSingleUser = async(req, res, next) => {
+    const {username} = req.params
+
+    try {
+
+        const singleUser = await getUser(username)
+    
+        res.status(200).send(singleUser)
+    
+    }
+    catch(err) {
+        next(err)
+    }
+   
+    
+}
