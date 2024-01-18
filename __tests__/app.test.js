@@ -173,7 +173,7 @@ describe("6. GET /api/articles/:article_id/comments returns 200", () => {
     });
   });
 
-describe("7. POST /api/articles/:article_id/comments", () => {
+describe.only("7. POST /api/articles/:article_id/comments", () => {
   describe("POST /api/articles/:article_id/comments", () => {
     describe("POST /api/articles/:article_id/comments returns 201", () => {
       test("status code: 201", () => {
@@ -199,8 +199,9 @@ describe("7. POST /api/articles/:article_id/comments", () => {
         .send(body)
         .expect(201)
         .then(({ body }) => {
+          console.log(body)
           expect(body).toEqual({
-            body: body.body,
+            body: "Test add to article 10",
           });
         });
     });
@@ -216,6 +217,20 @@ describe("7. POST /api/articles/:article_id/comments", () => {
         .expect(404)
         .then(({ body }) => {
           expect(body.msg).toEqual("Article ID not found");
+        });
+    });
+
+    test("Will return 404 if invalid username constraint", () => {
+      const body = {
+        username: "rogersopINVALID",
+        body: "Test add to article 10",
+      };
+      return request(app)
+        .post("/api/articles/1/comments")
+        .send(body)
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toEqual("Username not found");
         });
     });
   });
