@@ -173,7 +173,7 @@ describe("6. GET /api/articles/:article_id/comments returns 200", () => {
     });
   });
 
-describe.only("7. POST /api/articles/:article_id/comments", () => {
+describe("7. POST /api/articles/:article_id/comments", () => {
   describe("POST /api/articles/:article_id/comments", () => {
     describe("POST /api/articles/:article_id/comments returns 201", () => {
       test("status code: 201", () => {
@@ -289,11 +289,25 @@ describe("8. PATCH /api/articles/:article_id votes", () => {
   });
 });
 
-describe("9. DELETE /api/comments/:comment_id returns 204", () => {
+describe.only("9. DELETE /api/comments/:comment_id returns 204", () => {
   describe("/api/comments/:comment_id", () => {
     describe("DELETE /api/comments/:comment_id returns 204", () => {
       test("status code: 204", () => {
-        return request(app).delete("/api/comments/1/").expect(204);
+        // Article 9 has comment IDs 1, 17 after deleting should only have comment_id 1
+        return request(app).delete("/api/comments/17/").expect(204).then(() => {
+          request(app).get("/api/articles/9/comments").expect(200).then(({body}) => {
+            expect(body).toEqual([
+              {
+                "comment_id": 1,
+                "body": "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+                "article_id": 9,
+                "author": "butter_bridge",
+                "votes": 16,
+                "created_at": "2020-04-06T12:17:00.000Z"
+              }
+            ])
+          })
+        });
       });
     });
 
