@@ -349,7 +349,7 @@ describe("10. GET /api/users", () => {
   });
 });
 
-describe.only("11. GET /api/articles topic query", () => {
+describe("11. GET /api/articles topic query", () => {
   describe("/api/users", () => {
     describe("GET /api/users/ returns 200", () => {
       test("status code: 200", () => {

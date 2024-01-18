@@ -54,7 +54,8 @@ exports.getSingleArticle = async (article_id) => {
   }
 };
 
-exports.getArticles = async (topic) => {
+exports.getArticles = async (topic = '', sort_by = 'created_at', order = 'desc') => {
+  // const validSortQueries = []
   // const queryValues = [];
   // let queryStr = `SELECT articles.*, COUNT(comments) AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id GROUP BY articles.article_id ORDER BY articles.created_at DESC`
 
@@ -65,9 +66,42 @@ exports.getArticles = async (topic) => {
 
   // console.log(queryStr)
 
+  // if statement for topics if nothign in topic should get all topics
+  // SELECT * FROM articles WHERE topic = 'cats' ORDER BY votes DESC;
+
+  // let queryStr = `SELECT * FROM articles`
+
+  // console.log(queryStr)
+
+  // console.log(topic, '<< topic')
+  // console.log(sort_by, ' <<< sort')
+  // if (topic === undefined) {
+  //   queryStr = queryStr
+  // }
+
+  // console.log(queryStr)
+
+  // if (topic.topic) {
+  //   queryStr += ` WHERE topic = '${topic.topic}'`
+  // }
+
+  // if (sort_by) {
+  //   queryStr += ` ORDER BY '${sort_by}'`
+  // }
 
   
-  // check if topic exists
+
+  // console.log(queryStr)
+
+  
+  // // check if topic exists
+  // console.log(topic, sort_by, order)
+
+  // // const testing = await connection.query(`
+  // //   ${queryStr}
+  // // `)
+
+  // console.log(testing.rows)
 
  
 
