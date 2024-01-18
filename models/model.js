@@ -49,15 +49,25 @@ exports.getSingleArticle = async (article_id) => {
   }
 };
 
-exports.getArticles = async () => {
+exports.getArticles = async (topic) => {
   try {
-    const query = await connection.query(`
-        SELECT articles.*, COUNT(comments) AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id GROUP BY articles.article_id ORDER BY articles.created_at DESC;
-        `);
+    if (topic.topic) {
+      const query = await connection.query(`
+      SELECT * FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id WHERE topic = '${topic.topic}'
+      `);
 
-    const { rows } = query;
+      const { rows } = query;
 
-    return rows;
+      return rows;
+    } else {
+      const query = await connection.query(`
+      SELECT articles.*, COUNT(comments) AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id GROUP BY articles.article_id ORDER BY articles.created_at DESC;
+      `);
+
+      const { rows } = query;
+
+      return rows;
+    }
   } catch (err) {}
 };
 

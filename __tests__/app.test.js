@@ -340,3 +340,31 @@ describe("10. GET /api/users", () => {
     });
   });
 });
+
+describe("11. GET /api/articles topic query", () => {
+  describe("/api/users", () => {
+    describe("GET /api/users/ returns 200", () => {
+      test("status code: 200", () => {
+        return request(app).get("/api/articles?topic=cats").expect(200).then(({body}) => {
+          console.log(body)
+          // Add test for article topic and comments after fixing SQL statement
+        });
+      });
+    });
+
+    // test("Returns array of objects ", () => {
+    //   return request(app)
+    //     .get("/api/users")
+    //     .expect(200)
+    //     .then(({ body }) => {
+    //       body.forEach((topic) => {
+    //         expect(topic).toMatchObject({
+    //           username: expect.any(String),
+    //           name: expect.any(String),
+    //           avatar_url: expect.any(String),
+    //         });
+    //       });
+    //     });
+    // });
+  });
+});
