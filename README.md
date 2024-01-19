@@ -1,6 +1,6 @@
 # Northcoders News API
 
-- [Link to live site](https://be-nc-news-fz91.onrender.com)
+- [Link to live site](https://be-nc-news-fz91.onrender.com/api/users/)
 
 ## About
 
