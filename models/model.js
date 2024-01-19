@@ -278,3 +278,40 @@ exports.patchSingleComment = async (comment_id, body) => {
     return Promise.reject({ status: 404, msg: "Comment ID not found" });
   }
 };
+
+exports.postSingleArticle = async(body) => {
+  console.log(body)
+
+  let insertIntoStr = `INSERT INTO articles(author, title, body, topic)`
+
+  let valuesInsertStr = `'${body.author}', '${body.title}', '${body.body}', '${body.topic}'`
+
+  if (body.article_img_url) {
+    insertIntoStr = `INSERT INTO articles(author, title, body, topic, article_img_url)`
+    valuesInsertStr += `, '${body.article_img_url}'`
+  }
+
+  try {
+    const query = await connection.query(`
+        ${insertIntoStr} 
+        VALUES (${valuesInsertStr}) 
+        RETURNING *;
+        `);
+
+        
+        const {rows} = query
+        
+        console.log(rows)
+    // Add comment_count: 0 to object as it is a new article so has no comments
+
+    rows[0].comment_count = 0
+
+    return rows
+  }
+  catch(err) {
+    if (err.code === '23503') {
+      return Promise.reject({ status: 400, msg: "Invalid foreign key, please check author and topic" });
+    }
+
+  }
+}

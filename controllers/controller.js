@@ -10,6 +10,7 @@ const {
   getAllUsers,
   getUser,
   patchSingleComment,
+  postSingleArticle,
 } = require("../models/model");
 
 exports.getAllTopics = async (req, res, next) => {
@@ -150,3 +151,19 @@ exports.patchComments = async(req, res, next) => {
       next(err);
     }
 }
+
+
+exports.postArticle = async (req, res, next) => {
+    const { body } = req;
+
+    console.log(body)
+  
+    try {
+      const postedArticle = await postSingleArticle(body);
+  
+      res.status(201).send(postedArticle)
+    } catch (err) {
+      next(err);
+    }
+  };
+  

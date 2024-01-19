@@ -40,7 +40,7 @@ app.get("/api/users/:username", getSingleUser)
 
 app.patch("/api/comments/:comment_id", patchComments)
 
-// app.post("/api/articles", postArticle)
+app.post("/api/articles", postArticle)
 
 
 // Custom Errors
