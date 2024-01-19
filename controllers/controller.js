@@ -9,6 +9,7 @@ const {
   deleteSingleComment,
   getAllUsers,
   getUser,
+  patchSingleComment,
 } = require("../models/model");
 
 exports.getAllTopics = async (req, res, next) => {
@@ -134,6 +135,18 @@ exports.getSingleUser = async(req, res, next) => {
     catch(err) {
         next(err)
     }
-   
-    
+
+}
+
+exports.patchComments = async(req, res, next) => {
+    const { comment_id} = req.params
+    const { body } = req;
+
+    try {
+      const patchedComment = await patchSingleComment(comment_id, body);
+  
+      res.status(201).send(patchedComment);
+    } catch (err) {
+      next(err);
+    }
 }
