@@ -359,55 +359,59 @@ describe("11. GET /api/articles topic query", () => {
   });
 
   test("status code: 404", () => {
-    return request(app).get("/api/articles?topic=catsSSSS").expect(404).then(({body}) => {
-      expect(body).toEqual({msg: 'No topics found'})
-    });
+    return request(app)
+      .get("/api/articles?topic=catsSSSS")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body).toEqual({ msg: "No topics found" });
+      });
   });
 });
 
-  test("Returns array of objects ", () => {
-    return request(app)
-      .get("/api/articles?topic=mitch")
-      .expect(200)
-      .then(({ body }) => {
-        body.articles.forEach((topic) => {
-          expect(topic).toMatchObject({
-            "article_id": expect.any(Number),
-            "title": expect.any(String),
-            "topic": expect.any(String),
-            "author": expect.any(String),
-            "body": expect.any(String),
-            "created_at": expect.any(String),
-            "votes": expect.any(Number),
-            "article_img_url": expect.any(String),
-            "comment_count": expect.any(String),
-          });
+test("Returns array of objects ", () => {
+  return request(app)
+    .get("/api/articles?topic=mitch")
+    .expect(200)
+    .then(({ body }) => {
+      body.articles.forEach((topic) => {
+        expect(topic).toMatchObject({
+          article_id: expect.any(Number),
+          title: expect.any(String),
+          topic: expect.any(String),
+          author: expect.any(String),
+          body: expect.any(String),
+          created_at: expect.any(String),
+          votes: expect.any(Number),
+          article_img_url: expect.any(String),
+          comment_count: expect.any(String),
         });
       });
-  });
+    });
+});
 
-  test("Returns single object for cats ", () => {
-    return request(app)
-      .get("/api/articles?topic=cats")
-      .expect(200)
-      .then(({ body }) => {
-        expect(body).toEqual({
-          articles: [
-            {
-              article_id: 5,
-              title: 'UNCOVERED: catspiracy to bring down democracy',
-              topic: 'cats',
-              author: 'rogersop',
-              body: 'Bastet walks amongst us, and the cats are taking arms!',
-              created_at: '2020-08-03T13:14:00.000Z',
-              votes: 0,
-              article_img_url: 'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700',
-              comment_count: '2'
-            }
-          ]
-        });
+test("Returns single object for cats ", () => {
+  return request(app)
+    .get("/api/articles?topic=cats")
+    .expect(200)
+    .then(({ body }) => {
+      expect(body).toEqual({
+        articles: [
+          {
+            article_id: 5,
+            title: "UNCOVERED: catspiracy to bring down democracy",
+            topic: "cats",
+            author: "rogersop",
+            body: "Bastet walks amongst us, and the cats are taking arms!",
+            created_at: "2020-08-03T13:14:00.000Z",
+            votes: 0,
+            article_img_url:
+              "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+            comment_count: "2",
+          },
+        ],
       });
-  });
+    });
+});
 
 describe("12. GET /api/articles/:article_id (comment_count)", () => {
   describe("/api/articles/:article_id", () => {
@@ -430,7 +434,6 @@ describe("12. GET /api/articles/:article_id (comment_count)", () => {
   });
 });
 
-
 describe("17. GET /api/users/:username", () => {
   describe("/api/users/:username", () => {
     describe("GET /api/users/:username returns 200", () => {
@@ -445,9 +448,9 @@ describe("17. GET /api/users/:username", () => {
         .expect(200)
         .then(({ body }) => {
           expect(body).toMatchObject({
-            "username": expect.any(String),
-            "avatar_url": expect.any(String),
-            "name": expect.any(String)
+            username: expect.any(String),
+            avatar_url: expect.any(String),
+            name: expect.any(String),
           });
         });
     });
@@ -457,7 +460,7 @@ describe("17. GET /api/users/:username", () => {
         .get("/api/users/fakeuser")
         .expect(404)
         .then(({ body }) => {
-          expect(body).toEqual({msg: "Username not found"})
+          expect(body).toEqual({ msg: "Username not found" });
         });
     });
   });
@@ -467,10 +470,9 @@ describe("18. PATCH /api/comments/:comment_id", () => {
   describe("/api/comments/:comment_id", () => {
     describe("PATCH /api/comments/:comment_id", () => {
       test("status code: 201", () => {
-
         body = {
-          "inc_votes": 5
-        }
+          inc_votes: 5,
+        };
 
         return request(app).patch("/api/comments/1").send(body).expect(201);
       });
@@ -512,6 +514,85 @@ describe("18. PATCH /api/comments/:comment_id", () => {
         .expect(404)
         .then(({ body }) => {
           expect(body.msg).toBe("Comment ID not found");
+        });
+    });
+  });
+});
+
+describe("19. POST /api/articles/", () => {
+  describe("/api/articles/", () => {
+    describe("POST /api/articles/ returns 201", () => {
+      test("status code: 201", () => {
+        const body = {
+          author: "lurker",
+          title: "testArticle",
+          body: "ahhhh I am theeeee body",
+          topic: "mitch",
+        };
+
+        return request(app).post("/api/articles/").send(body).expect(201);
+      });
+    });
+
+    test("Will return article posted", () => {
+      const body = {
+        author: "lurker",
+        title: "testArticle",
+        body: "ahhhh I am theeeee body",
+        topic: "mitch",
+      };
+      return request(app)
+        .post("/api/articles/")
+        .send(body)
+        .expect(201)
+        .then(({ body }) => {
+          expect(body[0]).toMatchObject({
+            article_id: expect.any(Number),
+            title: expect.any(String),
+            topic: expect.any(String),
+            author: expect.any(String),
+            body: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            article_img_url: expect.any(String),
+            comment_count: expect.any(Number),
+          });
+        });
+    });
+
+    test("Will return 400 if invalid author", () => {
+      const body = {
+        author: "IAMINVALID",
+        title: "testArticle",
+        body: "ahhhh I am theeeee body",
+        topic: "cats",
+        article_img_url: "testURL",
+      };
+      return request(app)
+        .post("/api/articles/")
+        .send(body)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toEqual(
+            "Invalid foreign key, please check author and topic"
+          );
+        });
+    });
+
+    test("Will return 400 if invalid topic constraint", () => {
+      const body = {
+        author: "lurker",
+        title: "testArticle",
+        body: "ahhhh I am theeeee body",
+        topic: "INVALID TOPIC",
+        article_img_url: "testURL",
+      };
+      return request(app)
+        .post("/api/articles/")
+        .send(body)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toEqual("Invalid foreign key, please check author and topic");
         });
     });
   });
