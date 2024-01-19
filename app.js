@@ -12,6 +12,7 @@ const {
   getArticleTopic,
   getSingleUser,
   patchComments,
+  postArticle,
 } = require("./controllers/controller");
 
 const app = express();
@@ -38,6 +39,8 @@ app.get("/api/users", getUsers)
 app.get("/api/users/:username", getSingleUser)
 
 app.patch("/api/comments/:comment_id", patchComments)
+
+// app.post("/api/articles", postArticle)
 
 
 // Custom Errors
