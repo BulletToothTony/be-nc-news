@@ -54,7 +54,11 @@ exports.getSingleArticle = async (article_id) => {
   }
 };
 
-exports.getArticles = async (topic = '', sort_by = 'created_at', order = 'desc') => {
+exports.getArticles = async (
+  topic = "",
+  sort_by = "created_at",
+  order = "desc"
+) => {
   // const validSortQueries = []
   // const queryValues = [];
   // let queryStr = `SELECT articles.*, COUNT(comments) AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id GROUP BY articles.article_id ORDER BY articles.created_at DESC`
@@ -89,11 +93,8 @@ exports.getArticles = async (topic = '', sort_by = 'created_at', order = 'desc')
   //   queryStr += ` ORDER BY '${sort_by}'`
   // }
 
-  
-
   // console.log(queryStr)
 
-  
   // // check if topic exists
   // console.log(topic, sort_by, order)
 
@@ -103,16 +104,16 @@ exports.getArticles = async (topic = '', sort_by = 'created_at', order = 'desc')
 
   // console.log(testing.rows)
 
- 
-
-
   try {
     if (topic.topic) {
-      const query = await connection.query(`
+      const query = await connection.query(
+        `
       SELECT articles.*, COUNT(comments) AS comment_count 
       FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id WHERE articles.topic = $1
       GROUP BY articles.article_id ORDER BY articles.created_at DESC;
-      `, [topic.topic]);
+      `,
+        [topic.topic]
+      );
 
       const { rows } = query;
 
@@ -234,22 +235,46 @@ exports.getAllUsers = async () => {
   }
 };
 
-exports.getUser = async(username) => {
+exports.getUser = async (username) => {
   try {
     const query = await connection.query(`
       SELECT * FROM users WHERE username = '${username}'
-    `)
+    `);
 
-    const {rows} = query;
+    const { rows } = query;
 
     if (rows.length === 0) {
       return Promise.reject({ status: 404, msg: "Username not found" });
     }
 
-    return rows[0]
+    return rows[0];
+  } catch (err) {
+    console.log(err);
   }
+};
 
-  catch(err) {
-    console.log(err)
+exports.patchSingleComment = async (comment_id, body) => {
+  try {
+    const currentVotes = await connection.query(`
+        SELECT votes FROM comments WHERE comment_id = ${comment_id}
+        `);
+
+    let currentVoteNumber = currentVotes.rows[0].votes;
+
+    const newVoteNum = (currentVoteNumber += body.inc_votes);
+
+    const query = await connection.query(`
+        UPDATE comments SET votes = ${newVoteNum} WHERE comment_id = ${comment_id};
+        `);
+
+    const updatedComment = await connection.query(`
+        SELECT * FROM comments WHERE comment_id = ${comment_id}
+        `);
+
+    const { rows } = updatedComment;
+
+    return rows;
+  } catch (err) {
+    return Promise.reject({ status: 404, msg: "Comment ID not found" });
   }
-}
+};

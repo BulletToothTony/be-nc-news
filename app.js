@@ -11,6 +11,7 @@ const {
   getUsers,
   getArticleTopic,
   getSingleUser,
+  patchComments,
 } = require("./controllers/controller");
 
 const app = express();
@@ -35,6 +36,8 @@ app.delete("/api/comments/:comment_id", deleteComment)
 app.get("/api/users", getUsers)
 
 app.get("/api/users/:username", getSingleUser)
+
+app.patch("/api/comments/:comment_id", patchComments)
 
 
 // Custom Errors

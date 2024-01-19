@@ -431,7 +431,7 @@ describe("12. GET /api/articles/:article_id (comment_count)", () => {
 });
 
 
-describe.only("17. GET /api/users/:username", () => {
+describe("17. GET /api/users/:username", () => {
   describe("/api/users/:username", () => {
     describe("GET /api/users/:username returns 200", () => {
       test("status code: 200", () => {
@@ -463,3 +463,56 @@ describe.only("17. GET /api/users/:username", () => {
   });
 });
 
+describe.only("18. PATCH /api/comments/:comment_id", () => {
+  describe("/api/comments/:comment_id", () => {
+    describe("PATCH /api/comments/:comment_id", () => {
+      test("status code: 201", () => {
+
+        body = {
+          "inc_votes": 5
+        }
+
+        return request(app).patch("/api/comments/1").send(body).expect(201);
+      });
+    });
+
+    test("Will update comments with number of votes incremented", () => {
+      const body = {
+        inc_votes: 1,
+      };
+      return request(app)
+        .patch("/api/comments/1")
+        .send(body)
+        .expect(201)
+        .then(({ body }) => {
+          expect(body[0].votes).toBe(22);
+        });
+    });
+
+    test("Will decrease comment votes", () => {
+      const body = {
+        inc_votes: -2,
+      };
+      return request(app)
+        .patch("/api/comments/1")
+        .send(body)
+        .expect(201)
+        .then(({ body }) => {
+          expect(body[0].votes).toBe(20);
+        });
+    });
+
+    test("Invalid comment ID returns 404 and error message", () => {
+      const body = {
+        inc_votes: 1,
+      };
+      return request(app)
+        .patch("/api/comments/999")
+        .send(body)
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Comment ID not found");
+        });
+    });
+  });
+});
