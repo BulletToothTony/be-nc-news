@@ -463,7 +463,7 @@ describe("17. GET /api/users/:username", () => {
   });
 });
 
-describe.only("18. PATCH /api/comments/:comment_id", () => {
+describe("18. PATCH /api/comments/:comment_id", () => {
   describe("/api/comments/:comment_id", () => {
     describe("PATCH /api/comments/:comment_id", () => {
       test("status code: 201", () => {
