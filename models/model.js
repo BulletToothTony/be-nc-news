@@ -55,10 +55,13 @@ exports.getSingleArticle = async (article_id) => {
 };
 
 exports.getArticles = async (
-  topic = "",
-  sort_by = "created_at",
-  order = "desc"
+  topic,
+  sort_by = 'created_at',
+  order = 'DESC'
 ) => {
+  console.log(topic, 'topic model')
+  console.log(sort_by, 'sort by model')
+  console.log(order, 'order by model')
   // const validSortQueries = []
   // const queryValues = [];
   // let queryStr = `SELECT articles.*, COUNT(comments) AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id GROUP BY articles.article_id ORDER BY articles.created_at DESC`
@@ -105,12 +108,14 @@ exports.getArticles = async (
   // console.log(testing.rows)
 
   try {
-    if (topic.topic) {
+    if (topic.topic && sort_by) {
+      console.log('in topic', topic.topic)
+      console.log('in topic sort', sort_by)
       const query = await connection.query(
         `
       SELECT articles.*, COUNT(comments) AS comment_count 
       FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id WHERE articles.topic = $1
-      GROUP BY articles.article_id ORDER BY articles.created_at DESC;
+      GROUP BY articles.article_id ORDER BY ${sort_by === 'comment_count' ? 'comment_count' : `articles.${sort_by}`} ${order};
       `,
         [topic.topic]
       );
@@ -123,10 +128,12 @@ exports.getArticles = async (
 
       return rows;
     } else {
+      console.log('in topic', topic.topic)
+      console.log('in topic sort', sort_by)
       const query = await connection.query(`
       SELECT articles.*, COUNT(comments) AS comment_count 
       FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id 
-      GROUP BY articles.article_id ORDER BY articles.created_at DESC;
+      GROUP BY articles.article_id ORDER BY ${sort_by === 'comment_count' ? 'comment_count' : `articles.${sort_by}`} ${order};
       `);
 
       const { rows } = query;

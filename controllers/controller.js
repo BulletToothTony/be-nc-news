@@ -49,8 +49,12 @@ exports.getArticle = async (req, res, next) => {
 
 exports.getAllArticles = async (req, res, next) => {
   const { query } = req;
-  const {sort_by} = req;
-  const {order} = req
+  const {sort_by} = req.query;
+  const {order} = req.query
+
+  console.log(query, 'controller query')
+  console.log(sort_by, 'controller sort by  ')
+  console.log(order, 'controller order by ')
 
   try {
     const allArticles = await getArticles(query, sort_by, order);
